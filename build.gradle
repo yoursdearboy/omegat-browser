@@ -21,3 +21,16 @@ jar {
                 "com.yoursdearboy.omegat.plugins.multitran.MultitranWindow")
     }
 }
+
+task copyToOmegaT {
+    doLast {
+        def VAR_NAME = "OMEGAT_HOME"
+        def omegatDir = System.getenv(VAR_NAME)
+        if (!omegatDir) omegatDir = System.getProperty(VAR_NAME)
+        if (!omegatDir) throw new GradleException("Set $VAR_NAME variable or property")
+        copy {
+            from file("$buildDir/libs")
+            into file("$omegatDir/plugins")
+        }
+    }
+}
