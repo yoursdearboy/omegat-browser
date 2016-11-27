@@ -5,6 +5,10 @@ apply plugin: 'java'
 
 sourceCompatibility = 1.5
 
+ext {
+    mainClass = "com.yoursdearboy.omegat.plugins.multitran.MultitranWindow"
+}
+
 repositories {
     mavenCentral()
 }
@@ -17,8 +21,7 @@ dependencies {
 jar {
     manifest {
         attributes("OmegaT-Plugin": true)
-        attributes("OmegaT-Plugin": "Marker",
-                "com.yoursdearboy.omegat.plugins.multitran.MultitranWindow")
+        attributes("OmegaT-Plugin": "Marker", (String) rootProject.ext.mainClass)
     }
 }
 
