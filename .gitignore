@@ -40,3 +40,6 @@ gradle-app.setting
 
 ## IntelliJ
 /out/
+
+# Libs
+libs/*.jar
