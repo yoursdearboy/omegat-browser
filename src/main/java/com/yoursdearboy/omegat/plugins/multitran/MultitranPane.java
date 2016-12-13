@@ -2,7 +2,6 @@ package com.yoursdearboy.omegat.plugins.multitran;
 
 import com.vlsolutions.swing.docking.DockingDesktop;
 import com.vlsolutions.swing.docking.RelativeDockablePosition;
-import org.omegat.gui.main.DockableScrollPane;
 import org.omegat.gui.main.IMainWindow;
 import org.omegat.gui.main.MainWindow;
 
@@ -13,7 +12,7 @@ import java.awt.*;
  *
  */
 class MultitranPane extends JPanel {
-    private final DockableScrollPane pane;
+    private final DockablePanel pane;
     private final String key = "MULTITRAN";
     private final String title = "Multitran";
     private final Browser browser;
@@ -21,7 +20,7 @@ class MultitranPane extends JPanel {
     MultitranPane(final IMainWindow mainWindow) {
         super(new BorderLayout());
 
-        pane = new DockableScrollPane(key, title, this, true);
+        pane = new DockablePanel(key, title, this, true);
 
         // FIXME: Add dockable using IMainWindow mainWindow
         final DockingDesktop desktop = getDockingDesktop((MainWindow) mainWindow);
@@ -35,8 +34,7 @@ class MultitranPane extends JPanel {
         });
 
         browser = new Browser("multitran.ru");
-        add(browser);
-
+        add(browser, BorderLayout.CENTER);
         setVisible(true);
     }
 
