@@ -20,30 +20,39 @@ import java.net.URL;
  */
 class Browser extends JFXPanel {
     private WebEngine engine;
+    private WebView webView;
     private final String domain;
 
     Browser(final String domain) {
         this.domain = domain;
+        setLayout(new BorderLayout());
         Platform.runLater(new Runnable() {
             public void run() {
-                WebView webView = new WebView();
+                webView = new WebView();
                 engine = webView.getEngine();
 
                 // FIXME: Prevent visiting the url
                 // for now this is the best solution
                 engine.locationProperty().addListener(new ChangeListener<String>() {
                     public void changed(ObservableValue<? extends String> observable, final String oldValue, String newValue) {
-                        if (!newValue.contains(domain)) {
-                            Platform.runLater(new Runnable() {
-                                public void run() {
-                                    engine.load(oldValue);
-                                }
-                            });
-                            try {
-                                Desktop.getDesktop().browse(new URI(newValue));
-                            } catch (URISyntaxException ignored) {
-                            } catch (IOException ignored) {
+                        try {
+                            URI newUri = new URI(newValue);
+                            String newDomain = newUri.getHost();
+                            if (newDomain.startsWith("www.")) {
+                                newDomain = newDomain.substring(4);
                             }
+                            if (!newDomain.equals(domain)) {
+                                Platform.runLater(new Runnable() {
+                                    public void run() {
+                                        engine.load(oldValue);
+                                    }
+                                });
+                                try {
+                                    Desktop.getDesktop().browse(newUri);
+                                } catch (IOException ignored) {
+                                }
+                            }
+                        } catch (URISyntaxException ignored) {
                         }
                     }
                 });
