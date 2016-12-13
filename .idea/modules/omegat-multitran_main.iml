@@ -18,5 +18,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="Gradle: org.omegat:vldocking:3.0.5" level="project" />
+    <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.5" level="project" />
   </component>
 </module>
