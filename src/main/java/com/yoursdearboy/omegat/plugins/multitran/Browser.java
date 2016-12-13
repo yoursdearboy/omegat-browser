@@ -1,12 +1,18 @@
 package com.yoursdearboy.omegat.plugins.multitran;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
+import java.awt.*;
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 /**
@@ -22,6 +28,26 @@ class Browser extends JFXPanel {
             public void run() {
                 WebView webView = new WebView();
                 engine = webView.getEngine();
+
+                // FIXME: Prevent visiting the url
+                // for now this is the best solution
+                engine.locationProperty().addListener(new ChangeListener<String>() {
+                    public void changed(ObservableValue<? extends String> observable, final String oldValue, String newValue) {
+                        if (!newValue.contains(domain)) {
+                            Platform.runLater(new Runnable() {
+                                public void run() {
+                                    engine.load(oldValue);
+                                }
+                            });
+                            try {
+                                Desktop.getDesktop().browse(new URI(newValue));
+                            } catch (URISyntaxException ignored) {
+                            } catch (IOException ignored) {
+                            }
+                        }
+                    }
+                });
+
                 setScene(new Scene(webView));
                 loadURL(domain);
             }
