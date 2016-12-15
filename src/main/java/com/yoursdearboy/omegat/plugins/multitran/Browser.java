@@ -19,9 +19,13 @@ import java.net.URL;
  * http://docs.oracle.com/javafx/2/swing/SimpleSwingBrowser.java.htm
  */
 class Browser extends JFXPanel {
-    private WebEngine engine;
+    private WebEngine webEngine;
     private WebView webView;
     private final String domain;
+
+    Browser() {
+        this(null);
+    }
 
     Browser(final String domain) {
         this.domain = domain;
@@ -29,48 +33,32 @@ class Browser extends JFXPanel {
         Platform.runLater(new Runnable() {
             public void run() {
                 webView = new WebView();
-                engine = webView.getEngine();
-
-                // FIXME: Prevent visiting the url
-                // for now this is the best solution
-                engine.locationProperty().addListener(new ChangeListener<String>() {
-                    public void changed(ObservableValue<? extends String> observable, final String oldValue, String newValue) {
-                        try {
-                            URI newUri = new URI(newValue);
-                            String newDomain = newUri.getHost();
-                            if (newDomain.startsWith("www.")) {
-                                newDomain = newDomain.substring(4);
-                            }
-                            if (!newDomain.equals(domain)) {
-                                Platform.runLater(new Runnable() {
-                                    public void run() {
-                                        engine.load(oldValue);
-                                    }
-                                });
-                                try {
-                                    Desktop.getDesktop().browse(newUri);
-                                } catch (IOException ignored) {
-                                }
-                            }
-                        } catch (URISyntaxException ignored) {
-                        }
-                    }
-                });
-
+                webEngine = webView.getEngine();
+                if (domain != null) {
+                    fixDomain();
+                }
                 setScene(new Scene(webView));
                 loadURL(domain);
             }
         });
     }
 
-    void loadURL(final String url) {
+    public void loadURL(final String url) {
         Platform.runLater(new Runnable() {
             public void run() {
                 String tmp = toURL(url);
                 if (tmp == null) tmp = toURL("http://" + url);
-                engine.load(tmp);
+                webEngine.load(tmp);
             }
         });
+    }
+
+    public WebView getWebView() {
+        return webView;
+    }
+
+    public WebEngine getWebEngine() {
+        return webEngine;
     }
 
     private static String toURL(String str) {
@@ -79,5 +67,32 @@ class Browser extends JFXPanel {
         } catch (MalformedURLException ignored) {
             return null;
         }
+    }
+
+    // FIXME: Prevent visiting a url (for now this is the best solution)
+    private void fixDomain() {
+        webEngine.locationProperty().addListener(new ChangeListener<String>() {
+            public void changed(ObservableValue<? extends String> observable, final String oldValue, String newValue) {
+                try {
+                    URI newUri = new URI(newValue);
+                    String newDomain = newUri.getHost();
+                    if (newDomain.startsWith("www.")) {
+                        newDomain = newDomain.substring(4);
+                    }
+                    if (!newDomain.equals(domain)) {
+                        Platform.runLater(new Runnable() {
+                            public void run() {
+                                webEngine.load(oldValue);
+                            }
+                        });
+                        try {
+                            Desktop.getDesktop().browse(newUri);
+                        } catch (IOException ignored) {
+                        }
+                    }
+                } catch (URISyntaxException ignored) {
+                }
+            }
+        });
     }
 }
