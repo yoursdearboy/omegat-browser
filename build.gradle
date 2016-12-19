@@ -1,4 +1,4 @@
-group 'com.yoursdearboy.omegat.plugins.multitran'
+group 'com.yoursdearboy.omegat.plugins.browser'
 version '1.0'
 
 apply plugin: 'java'
@@ -6,7 +6,7 @@ apply plugin: 'java'
 sourceCompatibility = 1.6
 
 ext {
-    mainClass = "com.yoursdearboy.omegat.plugins.multitran.BrowserPlugin"
+    mainClass = "com.yoursdearboy.omegat.plugins.browser.BrowserPlugin"
 }
 
 repositories {

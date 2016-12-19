@@ -1,4 +1,4 @@
-package com.yoursdearboy.omegat.plugins.multitran;
+package com.yoursdearboy.omegat.plugins.browser;
 
 import javafx.application.Platform;
 import org.omegat.core.Core;

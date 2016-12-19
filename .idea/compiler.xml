@@ -2,6 +2,8 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="omegat-browser_main" target="1.6" />
+      <module name="omegat-browser_test" target="1.6" />
       <module name="omegat-multitran_main" target="1.6" />
       <module name="omegat-multitran_test" target="1.6" />
     </bytecodeTargetLevel>

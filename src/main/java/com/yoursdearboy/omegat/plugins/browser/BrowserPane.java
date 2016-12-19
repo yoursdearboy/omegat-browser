@@ -1,4 +1,4 @@
-package com.yoursdearboy.omegat.plugins.multitran;
+package com.yoursdearboy.omegat.plugins.browser;
 
 import com.vlsolutions.swing.docking.DockingDesktop;
 import com.vlsolutions.swing.docking.RelativeDockablePosition;

@@ -1,4 +1,4 @@
-package com.yoursdearboy.omegat.plugins.multitran;
+package com.yoursdearboy.omegat.plugins.browser;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
