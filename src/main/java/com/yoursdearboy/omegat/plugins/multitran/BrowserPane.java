@@ -11,13 +11,15 @@ import java.awt.*;
 /**
  *
  */
-class MultitranPane extends JPanel {
-    private final DockablePanel pane;
-    private final String key = "MULTITRAN";
-    private final String title = "Multitran";
-    private final Browser browser;
+class BrowserPane extends JPanel {
+    private DockablePanel pane;
+    private Browser browser;
 
-    MultitranPane(final IMainWindow mainWindow) {
+    public BrowserPane(final IMainWindow mainWindow, String key, String title) {
+        new BrowserPane(mainWindow, key, title, null);
+    }
+
+    public BrowserPane(final IMainWindow mainWindow, String key, String title, String domain) {
         super(new BorderLayout());
 
         pane = new DockablePanel(key, title, this, true);
@@ -33,12 +35,15 @@ class MultitranPane extends JPanel {
             }
         });
 
-        browser = new Browser("multitran.ru");
+        browser = new Browser(domain);
         add(browser, BorderLayout.CENTER);
         setVisible(true);
     }
 
-    // NOTE: Requires MainWindow, not IMainWindow
+    public Browser getBrowser() {
+        return browser;
+    }
+
     private DockingDesktop getDockingDesktop(MainWindow mainWindow) {
         DockingDesktop desktop = null;
         for (Component component : mainWindow.getContentPane().getComponents()) {
