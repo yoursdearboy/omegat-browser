@@ -11,10 +11,10 @@ import javax.swing.text.JTextComponent;
 import java.awt.*;
 
 /**
- *
+ * Absolute analogue (except scroll!) of org.omegat.gui.main.DockableScrollPane
  */
 public class DockablePanel extends JPanel implements Dockable {
-    DockKey dockKey;
+    private DockKey dockKey;
 
     public void setToolTipText(String text) {
         this.dockKey.setTooltip(text);
@@ -24,7 +24,7 @@ public class DockablePanel extends JPanel implements Dockable {
         this.dockKey.setName(name);
     }
 
-    public DockablePanel(String key, String name, Component view, boolean detouchable) {
+    DockablePanel(String key, String name, Component view, boolean detouchable) {
         super(new BorderLayout());
 
         add(view);
@@ -40,7 +40,7 @@ public class DockablePanel extends JPanel implements Dockable {
             this.setBorder(panelBorder1);
         }
 
-        this.dockKey = new DockKey(key, name, (String)null, (Icon)null, DockingConstants.HIDE_BOTTOM);
+        this.dockKey = new DockKey(key, name, null, null, DockingConstants.HIDE_BOTTOM);
         this.dockKey.setFloatEnabled(detouchable);
         this.dockKey.setCloseEnabled(false);
     }

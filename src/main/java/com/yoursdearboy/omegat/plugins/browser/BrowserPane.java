@@ -15,11 +15,11 @@ class BrowserPane extends JPanel {
     private DockablePanel pane;
     private Browser browser;
 
-    public BrowserPane(final IMainWindow mainWindow, String key, String title) {
+    BrowserPane(final IMainWindow mainWindow, String key, String title) {
         new BrowserPane(mainWindow, key, title, null);
     }
 
-    public BrowserPane(final IMainWindow mainWindow, String key, String title, String domain) {
+    BrowserPane(final IMainWindow mainWindow, String key, String title, String domain) {
         super(new BorderLayout());
 
         pane = new DockablePanel(key, title, this, true);
