@@ -1,4 +1,8 @@
 import javafx.application.Platform
+import javafx.beans.property.ReadOnlyObjectProperty
+import javafx.beans.value.ChangeListener
+import javafx.beans.value.ObservableValue
+import javafx.concurrent.Worker
 import org.omegat.core.Core
 import org.omegat.core.CoreEvents
 import org.omegat.core.data.ProjectProperties
@@ -12,6 +16,18 @@ def DOMAIN = "translate.google.com"
 
 def pane = BrowserPlugin.getPane(KEY, TITLE, DOMAIN)
 
+def updateSourceText = { text ->
+    if (text == null) text = ""
+    Platform.runLater(new Runnable() {
+        @Override
+        void run() {
+            text = escapeJavaStyleString(text)
+            String jsCode = "document.getElementById(\"source\").value = \"${text}\""
+            pane.getBrowser().getWebEngine().executeScript(jsCode)
+        }
+    });
+}
+
 CoreEvents.registerEntryEventListener(new IEntryEventListener() {
     @Override
     void onNewFile(String s) {
@@ -19,15 +35,7 @@ CoreEvents.registerEntryEventListener(new IEntryEventListener() {
 
     @Override
     void onEntryActivated(SourceTextEntry sourceTextEntry) {
-        Platform.runLater(new Runnable() {
-            @Override
-            void run() {
-                String text = sourceTextEntry.srcText
-                text = escapeJavaStyleString(text)
-                String jsCode = "document.getElementById(\"source\").value = \"${text}\""
-                pane.getBrowser().getWebEngine().executeScript(jsCode)
-            }
-        })
+        updateSourceText(sourceTextEntry.srcText)
     }
 })
 
@@ -42,7 +50,25 @@ CoreEvents.registerProjectChangeListener(new IProjectEventListener() {
             String sourceCode = pp.getSourceLanguage().getLanguageCode().toLowerCase()
             String targetCode = pp.getTargetLanguage().getLanguageCode().toLowerCase()
             String url = "http://${DOMAIN}/#${sourceCode}/${targetCode}"
-            pane.getBrowser().loadURL(url)
+            browser = pane.getBrowser()
+            browser.loadURL(url)
+            Platform.runLater(new Runnable() {
+                @Override
+                void run() {
+                    ReadOnlyObjectProperty<Worker.State> stateProperty = browser.getWebEngine().getLoadWorker().stateProperty()
+                    stateProperty.addListener(new ChangeListener<Worker.State>() {
+                        @Override
+                        void changed(ObservableValue<? extends Worker.State> observable, Worker.State oldValue, Worker.State newValue) {
+                            updateSourceText(Core.getEditor().getCurrentEntry().srcText)
+                            stateProperty.removeListener(this)
+                        }
+                    })
+                }
+            })
+        }
+
+        if (project_change_type == IProjectEventListener.PROJECT_CHANGE_TYPE.CLOSE) {
+            updateSourceText(null)
         }
     }
 })
