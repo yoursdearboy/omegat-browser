@@ -42,7 +42,7 @@ Action action = new AbstractAction() {
         String targetLangCode = pp.getTargetLanguage().getLanguageCode().toLowerCase()
         url = "http://${DOMAIN}${PATH}"
         url += "/${sourceLangCode}-${targetLangCode}"
-        url += "/${URLEncoder.encode(s, "UTF-8")}"
+        url += "/${URLEncoder.encode(s, "UTF-8").replace("+", "%20")}"
         pane.getBrowser().loadURL(url)
     }
 }
