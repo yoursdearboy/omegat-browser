@@ -10,10 +10,7 @@ import javax.script.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 
 /*
@@ -95,6 +92,11 @@ public class BrowserPlugin {
     }
 
     private static File[] getScripts() {
-        return getBrowserScriptsDir().listFiles();
+        return getBrowserScriptsDir().listFiles(new FilenameFilter(){
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".groovy");
+            }
+        });
     }
 }
