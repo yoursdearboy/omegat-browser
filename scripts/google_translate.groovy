@@ -15,7 +15,6 @@ def pane = BrowserPlugin.getPane(KEY, TITLE, DOMAIN)
 CoreEvents.registerEntryEventListener(new IEntryEventListener() {
     @Override
     void onNewFile(String s) {
-
     }
 
     @Override

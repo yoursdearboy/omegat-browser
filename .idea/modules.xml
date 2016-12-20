@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/omegat-browser.iml" filepath="$PROJECT_DIR$/.idea/modules/omegat-browser.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/omegat-browser_main.iml" filepath="$PROJECT_DIR$/.idea/modules/omegat-browser_main.iml" group="omegat-browser" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/omegat-browser_scripts.iml" filepath="$PROJECT_DIR$/.idea/modules/omegat-browser_scripts.iml" group="omegat-browser" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/omegat-browser_test.iml" filepath="$PROJECT_DIR$/.idea/modules/omegat-browser_test.iml" group="omegat-browser" />
     </modules>
   </component>

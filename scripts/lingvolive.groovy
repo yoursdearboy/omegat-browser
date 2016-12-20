@@ -20,7 +20,6 @@ def pane = BrowserPlugin.getPane(KEY, TITLE, DOMAIN)
 
 String caretWord = null
 CoreEvents.registerEditorEventListener(new IEditorEventListener() {
-    @Override
     void onNewWord(String s) {
         caretWord = s
     }
@@ -49,7 +48,7 @@ Action action = new AbstractAction() {
 
 Core.getEditor().registerPopupMenuConstructors(1000, new IPopupMenuConstructor() {
     @Override
-    public void addItems(JPopupMenu menu, JTextComponent comp, int mousepos, boolean isInActiveEntry,
+    void addItems(JPopupMenu menu, JTextComponent comp, int mousepos, boolean isInActiveEntry,
                          boolean isInActiveTranslation, final SegmentBuilder sb) {
         if (isInActiveEntry) {
             menu.addSeparator()
