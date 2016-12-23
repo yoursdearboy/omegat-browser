@@ -10,11 +10,19 @@ import java.io.FilenameFilter;
  *
  */
 class ScriptsRunner {
-    private final File scriptsDir;
     private final ScriptEngine scriptEngine;
+    private final ScriptsMonitor scriptsMonitor;
+    private final File scriptsDirectory;
 
-    ScriptsRunner(File scriptsDir) {
-        this.scriptsDir = scriptsDir;
+    ScriptsRunner(File scriptsDirectory) {
+        this.scriptsDirectory = scriptsDirectory;
+        this.scriptsMonitor = new ScriptsMonitor(this, new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith("groovy");
+            }
+        });
+
         Bindings bindings = new SimpleBindings();
         bindings.put("BrowserPane", BrowserPane.class);
         ScriptEngineManager scriptEngineManager = new ScriptEngineManager(BrowserPlugin.class.getClassLoader());
@@ -22,23 +30,25 @@ class ScriptsRunner {
         this.scriptEngine = scriptEngineManager.getEngineByName("groovy");
     }
 
-    File[] getScripts() {
-        return scriptsDir.listFiles(new FilenameFilter(){
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith(".groovy");
-            }
-        });
+    void start() {
+        scriptsMonitor.start();
     }
 
-    Object eval(File script) {
+    File getScriptsDirectory() {
+        return scriptsDirectory;
+    }
+
+    void enable(File file) {
         try {
-            return scriptEngine.eval(new FileReader(script));
-        } catch (ScriptException e) {
-            e.printStackTrace();
+            scriptEngine.eval(new FileReader(file));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (ScriptException e) {
+            e.printStackTrace();
         }
-        return null;
+    }
+
+    void disable(File file) {
+
     }
 }

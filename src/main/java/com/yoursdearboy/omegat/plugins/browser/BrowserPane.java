@@ -29,9 +29,7 @@ class BrowserPane extends JPanel {
         desktop.registerDockable(pane);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                if (desktop.getDockableState(pane) == null) {
-                    desktop.addHiddenDockable(pane, RelativeDockablePosition.BOTTOM_LEFT);
-                }
+                desktop.addHiddenDockable(pane, RelativeDockablePosition.BOTTOM_LEFT);
             }
         });
 

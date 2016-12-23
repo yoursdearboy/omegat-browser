@@ -27,7 +27,7 @@ public class BrowserPlugin {
             public void onApplicationStartup() {
                 Platform.setImplicitExit(false);
                 setupMenu();
-                for (File script : scriptsRunner.getScripts()) scriptsRunner.eval(script);
+                scriptsRunner.start();
             }
 
             @Override
