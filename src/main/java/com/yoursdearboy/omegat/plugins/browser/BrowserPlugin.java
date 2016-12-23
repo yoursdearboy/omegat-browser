@@ -9,14 +9,15 @@ import org.omegat.util.StaticUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.*;
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
 
 /*
  * @author Kirill Voronin (yoursdearboy@gmail.com)
  */
 public class BrowserPlugin {
-    private static String SCRIPTS_DIR_NAME = "browser-scripts";
+    private static String SCRIPTS_DIRNAME = "browser-scripts";
     private static String SCRIPTS_PREFS_FILENAME = "browser-scripts.prefs";
     private static ScriptsRunner scriptsRunner;
     private static ScriptsMonitor scriptsMonitor;
@@ -87,7 +88,7 @@ public class BrowserPlugin {
     }
 
     private static File getScriptsDir() {
-        return new File(StaticUtils.getConfigDir(), SCRIPTS_DIR_NAME);
+        return new File(StaticUtils.getConfigDir(), SCRIPTS_DIRNAME);
     }
 
     private static File getScriptsPrefsFile() {

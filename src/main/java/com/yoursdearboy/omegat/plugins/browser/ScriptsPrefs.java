@@ -7,7 +7,7 @@ import java.util.List;
 /**
  *
  */
-class ScriptsPrefs implements ScriptsEventListener {
+class ScriptsPrefs {
     private final File file;
     private final File scriptsDirectory;
     private List<File> enabledScripts;
@@ -15,7 +15,7 @@ class ScriptsPrefs implements ScriptsEventListener {
     ScriptsPrefs(File file, File scriptsDirectory, ScriptsRunner scriptsRunner) {
         this.file = file;
         this.scriptsDirectory = scriptsDirectory;
-        scriptsRunner.registerEventListener(this);
+        scriptsRunner.registerEventListener(new Updater());
     }
 
     void load() {
@@ -65,23 +65,25 @@ class ScriptsPrefs implements ScriptsEventListener {
         return enabledScripts;
     }
 
-    @Override
-    public void onAdd(File file) {
-    }
-
-    @Override
-    public void onEnable(File file) {
-        if (!enabledScripts.contains(file)) {
-            enabledScripts.add(file);
+    class Updater implements ScriptsEventListener {
+        @Override
+        public void onAdd(File file) {
         }
-    }
 
-    @Override
-    public void onDisable(File file) {
-        enabledScripts.remove(file);
-    }
+        @Override
+        public void onEnable(File file) {
+            if (!enabledScripts.contains(file)) {
+                enabledScripts.add(file);
+            }
+        }
 
-    @Override
-    public void onRemove(File file) {
+        @Override
+        public void onDisable(File file) {
+            enabledScripts.remove(file);
+        }
+
+        @Override
+        public void onRemove(File file) {
+        }
     }
 }

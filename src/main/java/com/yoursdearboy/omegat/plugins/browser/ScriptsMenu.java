@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  *
  */
-public class ScriptsMenu extends JMenu implements ScriptsEventListener {
+class ScriptsMenu extends JMenu implements ScriptsEventListener {
     private final Map<File,JCheckBoxMenuItem> menuItems;
     private final ScriptsRunner scriptsRunner;
 
