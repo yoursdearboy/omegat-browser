@@ -14,7 +14,7 @@ def KEY = "GOOGLE_TRANSLATE"
 def TITLE = "Google Translate"
 def DOMAIN = "translate.google.com"
 
-def pane = BrowserPlugin.getPane(KEY, TITLE, DOMAIN)
+def pane = BrowserPane.newInstance([Core.getMainWindow(), KEY, TITLE, DOMAIN] as Object[])
 
 def updateSourceText = { text ->
     if (text == null) text = ""

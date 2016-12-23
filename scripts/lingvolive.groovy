@@ -16,7 +16,7 @@ def TITLE = "ABBYY Lingvo Live"
 def DOMAIN = "lingvolive.com"
 def PATH = "/en-us/translate"
 
-def pane = BrowserPlugin.getPane(KEY, TITLE, DOMAIN)
+def pane = BrowserPane.newInstance([Core.getMainWindow(), KEY, TITLE, DOMAIN] as Object[])
 
 String caretWord = null
 CoreEvents.registerEditorEventListener(new IEditorEventListener() {

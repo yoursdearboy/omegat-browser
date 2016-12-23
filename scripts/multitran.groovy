@@ -15,7 +15,7 @@ def TITLE = "Multitran"
 def DOMAIN = "multitran.ru"
 def PATH = "/c/m.exe"
 
-def pane = BrowserPlugin.getPane(KEY, TITLE, DOMAIN)
+def pane = BrowserPane.newInstance([Core.getMainWindow(), KEY, TITLE, DOMAIN] as Object[])
 
 String caretWord = null
 CoreEvents.registerEditorEventListener(new IEditorEventListener() {

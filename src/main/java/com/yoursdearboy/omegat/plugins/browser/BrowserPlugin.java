@@ -18,7 +18,6 @@ import java.util.HashMap;
  */
 public class BrowserPlugin {
     private static String BROWSER_SCRIPTS_DIR_NAME = "browser-scripts";
-    private static HashMap<String,BrowserPane> panes = new HashMap<String, BrowserPane>();
     private static ScriptEngine scriptEngine;
 
     public static void loadPlugins() {
@@ -41,16 +40,6 @@ public class BrowserPlugin {
     public static void unloadPlugins() {
     }
 
-    public static BrowserPane getPane(String key, String title, String domain) {
-        if (panes.containsKey(key)) {
-            return panes.get(key);
-        } else {
-            BrowserPane pane = new BrowserPane(Core.getMainWindow(), key, title, domain);
-            panes.put(key, pane);
-            return pane;
-        }
-    }
-
     private static void setupBrowserScriptsDir() {
         File browserScriptsDir = getBrowserScriptsDir();
         if (!browserScriptsDir.exists()) browserScriptsDir.mkdir();
@@ -58,7 +47,7 @@ public class BrowserPlugin {
 
     private static void setupScriptEngine() {
         Bindings bindings = new SimpleBindings();
-        bindings.put("BrowserPlugin", BrowserPlugin.class);
+        bindings.put("BrowserPane", BrowserPane.class);
         ScriptEngineManager scriptEngineManager = new ScriptEngineManager(BrowserPlugin.class.getClassLoader());
         scriptEngineManager.setBindings(bindings);
         scriptEngine = scriptEngineManager.getEngineByName("groovy");
