@@ -13,9 +13,9 @@ class ScriptsMonitor implements DirectoryMonitor.Callback, DirectoryMonitor.Dire
     private final FilenameFilter filenameFilter;
     private final ScriptsRunner scriptsRunner;
 
-    ScriptsMonitor(ScriptsRunner scriptsRunner, FilenameFilter filenameFilter) {
+    ScriptsMonitor(ScriptsRunner scriptsRunner, File scriptsDirectory, FilenameFilter filenameFilter) {
         this.scriptsRunner = scriptsRunner;
-        this.directoryMonitor = new DirectoryMonitor(scriptsRunner.getScriptsDirectory(), this, this);
+        this.directoryMonitor = new DirectoryMonitor(scriptsDirectory, this, this);
         this.filenameFilter = filenameFilter;
     }
 
@@ -27,10 +27,10 @@ class ScriptsMonitor implements DirectoryMonitor.Callback, DirectoryMonitor.Dire
     public void fileChanged(File file) {
         if (!filenameFilter.accept(file.getParentFile(), file.getName())) return;
         if (file.exists()) {
-            scriptsRunner.disable(file);
-            scriptsRunner.enable(file);
+            scriptsRunner.remove(file);
+            scriptsRunner.add(file);
         } else {
-            scriptsRunner.disable(file);
+            scriptsRunner.remove(file);
         }
     }
 

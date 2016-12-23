@@ -10,24 +10,26 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 
 /*
  * @author Kirill Voronin (yoursdearboy@gmail.com)
  */
 public class BrowserPlugin {
-    private static String BROWSER_SCRIPTS_DIR_NAME = "browser-scripts";
+    private static String SCRIPTS_DIR_NAME = "browser-scripts";
     private static ScriptsRunner scriptsRunner;
+    private static ScriptsMonitor scriptsMonitor;
 
     public static void loadPlugins() {
-        setupBrowserScriptsDir();
-        setupScriptRunner();
+        setupScriptsDir();
+        setupScriptsRunner();
         CoreEvents.registerApplicationEventListener(new IApplicationEventListener() {
             @Override
             public void onApplicationStartup() {
                 Platform.setImplicitExit(false);
                 setupMenu();
-                scriptsRunner.start();
+                scriptsMonitor.start();
             }
 
             @Override
@@ -39,17 +41,23 @@ public class BrowserPlugin {
     public static void unloadPlugins() {
     }
 
-    private static void setupBrowserScriptsDir() {
+    private static void setupScriptsDir() {
         File browserScriptsDir = getBrowserScriptsDir();
         if (!browserScriptsDir.exists()) browserScriptsDir.mkdir();
     }
 
-    private static void setupScriptRunner() {
-        scriptsRunner = new ScriptsRunner(getBrowserScriptsDir());
+    private static void setupScriptsRunner() {
+        scriptsRunner = new ScriptsRunner();
+        scriptsMonitor = new ScriptsMonitor(scriptsRunner, getBrowserScriptsDir(), new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith("groovy");
+            }
+        });
     }
 
     private static File getBrowserScriptsDir() {
-        return new File(StaticUtils.getConfigDir(), BROWSER_SCRIPTS_DIR_NAME);
+        return new File(StaticUtils.getConfigDir(), SCRIPTS_DIR_NAME);
     }
 
     private static void setupMenu() {
@@ -65,5 +73,6 @@ public class BrowserPlugin {
                 }
             }
         });
+        toolsMenu.add(new ScriptsMenu("Browser scripts", scriptsRunner));
     }
 }

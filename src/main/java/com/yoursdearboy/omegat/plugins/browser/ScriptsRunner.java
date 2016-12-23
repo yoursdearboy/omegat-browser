@@ -1,28 +1,23 @@
 package com.yoursdearboy.omegat.plugins.browser;
 
+import org.omegat.util.Log;
+
 import javax.script.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  */
 class ScriptsRunner {
     private final ScriptEngine scriptEngine;
-    private final ScriptsMonitor scriptsMonitor;
-    private final File scriptsDirectory;
+    private List<ScriptsEventListener> listeners;
 
-    ScriptsRunner(File scriptsDirectory) {
-        this.scriptsDirectory = scriptsDirectory;
-        this.scriptsMonitor = new ScriptsMonitor(this, new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith("groovy");
-            }
-        });
-
+    ScriptsRunner() {
+        this.listeners = new ArrayList<ScriptsEventListener>();
         Bindings bindings = new SimpleBindings();
         bindings.put("BrowserPane", BrowserPane.class);
         ScriptEngineManager scriptEngineManager = new ScriptEngineManager(BrowserPlugin.class.getClassLoader());
@@ -30,15 +25,22 @@ class ScriptsRunner {
         this.scriptEngine = scriptEngineManager.getEngineByName("groovy");
     }
 
-    void start() {
-        scriptsMonitor.start();
+    void registerEventListener(ScriptsEventListener listener) {
+        listeners.add(listener);
     }
 
-    File getScriptsDirectory() {
-        return scriptsDirectory;
+    void unregisterEventListener(ScriptsEventListener listener) {
+        listeners.remove(listener);
+    }
+
+    void add(File file) {
+        Log.log(String.format("Adding browser script: %s", file.getName()));
+        for (ScriptsEventListener listener : listeners) listener.onAdd(file);
+        enable(file);
     }
 
     void enable(File file) {
+        Log.log(String.format("Enabling browser script: %s", file.getName()));
         try {
             scriptEngine.eval(new FileReader(file));
         } catch (FileNotFoundException e) {
@@ -46,9 +48,17 @@ class ScriptsRunner {
         } catch (ScriptException e) {
             e.printStackTrace();
         }
+        for (ScriptsEventListener listener : listeners) listener.onEnable(file);
     }
 
     void disable(File file) {
+        Log.log(String.format("Disabling browser script: %s", file.getName()));
+        for (ScriptsEventListener listener : listeners) listener.onDisable(file);
+    }
 
+    void remove(File file) {
+        disable(file);
+        Log.log(String.format("Removing browser script: %s", file.getName()));
+        for (ScriptsEventListener listener : listeners) listener.onRemove(file);
     }
 }
