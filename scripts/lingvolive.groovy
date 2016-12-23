@@ -11,6 +11,7 @@ import javax.swing.*
 import javax.swing.text.JTextComponent
 import java.awt.event.ActionEvent
 
+def FILENAME = "lingvolive.groovy"
 def KEY = "ABBYYLINGVOLIVE"
 def TITLE = "ABBYY Lingvo Live"
 def DOMAIN = "lingvolive.com"
@@ -62,6 +63,18 @@ int COMMAND_MASK = System.getProperty("os.name").contains("OS X") ? ActionEvent.
 KeyStroke keystroke = KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.ALT_MASK + COMMAND_MASK)
 mainWindow.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keystroke, "lookupInAbbyyLingvoLive")
 mainWindow.getRootPane().getActionMap().put("lookupInAbbyyLingvoLive", action)
+
+def scriptsEventListener = [onAdd: {}, onEnable: {}, onRemove: {}]
+scriptsEventListener['onDisable'] = {File file ->
+    if (file.getName() == FILENAME) {
+        pane.close()
+        scriptsRunner.unregisterEventListener(scriptsEventListener)
+    }
+};
+scriptsEventListener = scriptsEventListener.asType(ScriptsEventListener)
+
+scriptsRunner.registerEventListener(scriptsEventListener)
+
 
 // Better to install Roboto fonts
 //String addCssJsCode = """

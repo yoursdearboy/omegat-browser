@@ -77,6 +77,7 @@ def projectEventListener = new IProjectEventListener() {
 def scriptsEventListener = [onAdd: {}, onEnable: {}, onRemove: {}]
 scriptsEventListener['onDisable'] = {File file ->
     if (file.getName() == FILENAME) {
+        pane.close()
         CoreEvents.unregisterEntryEventListener(entryEventListener)
         CoreEvents.unregisterProjectChangeListener(projectEventListener)
         scriptsRunner.unregisterEventListener(scriptsEventListener)

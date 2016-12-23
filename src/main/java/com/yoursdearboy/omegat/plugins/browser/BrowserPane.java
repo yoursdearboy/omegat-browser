@@ -1,5 +1,6 @@
 package com.yoursdearboy.omegat.plugins.browser;
 
+import com.vlsolutions.swing.docking.Dockable;
 import com.vlsolutions.swing.docking.DockingDesktop;
 import com.vlsolutions.swing.docking.RelativeDockablePosition;
 import org.omegat.gui.main.IMainWindow;
@@ -12,6 +13,7 @@ import java.awt.*;
  *
  */
 class BrowserPane extends JPanel {
+    private IMainWindow mainWindow;
     private DockablePanel pane;
     private Browser browser;
 
@@ -22,7 +24,8 @@ class BrowserPane extends JPanel {
     BrowserPane(final IMainWindow mainWindow, String key, String title, String domain) {
         super(new BorderLayout());
 
-        pane = new DockablePanel(key, title, this, true);
+        this.mainWindow = mainWindow;
+        this.pane = new DockablePanel(key, title, this, true);
 
         // FIXME: Add dockable using IMainWindow mainWindow
         final DockingDesktop desktop = getDockingDesktop((MainWindow) mainWindow);
@@ -33,13 +36,23 @@ class BrowserPane extends JPanel {
             }
         });
 
-        browser = new Browser(domain);
+        this.browser = new Browser(domain);
         add(browser, BorderLayout.CENTER);
         setVisible(true);
     }
 
     public Browser getBrowser() {
         return browser;
+    }
+
+    // FIXME: actually close dockable, not just hide
+    // The best I've achieved is just close (do nothing) and remove (hides from dock)
+    // Algorithm from docs don't work or I don't understand it
+    // https://code.google.com/archive/p/vldocking/wikis/tutorial3.wiki
+    public void close() {
+        DockingDesktop desktop = getDockingDesktop((MainWindow) mainWindow);
+        desktop.close(pane);
+        desktop.remove((Dockable) pane);
     }
 
     private DockingDesktop getDockingDesktop(MainWindow mainWindow) {

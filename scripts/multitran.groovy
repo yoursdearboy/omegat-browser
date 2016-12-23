@@ -10,6 +10,7 @@ import javax.swing.*
 import javax.swing.text.JTextComponent
 import java.awt.event.ActionEvent
 
+def FILENAME = "multitran.groovy"
 def KEY = "MULTITRAN"
 def TITLE = "Multitran"
 def DOMAIN = "multitran.ru"
@@ -58,3 +59,14 @@ int COMMAND_MASK = System.getProperty("os.name").contains("OS X") ? ActionEvent.
 KeyStroke keystroke = KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.ALT_MASK + COMMAND_MASK)
 mainWindow.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keystroke, "lookupInMultitran")
 mainWindow.getRootPane().getActionMap().put("lookupInMultitran", action)
+
+def scriptsEventListener = [onAdd: {}, onEnable: {}, onRemove: {}]
+scriptsEventListener['onDisable'] = {File file ->
+    if (file.getName() == FILENAME) {
+        pane.close()
+        scriptsRunner.unregisterEventListener(scriptsEventListener)
+    }
+};
+scriptsEventListener = scriptsEventListener.asType(ScriptsEventListener)
+
+scriptsRunner.registerEventListener(scriptsEventListener)
