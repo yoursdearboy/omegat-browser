@@ -1,6 +1,7 @@
 package com.yoursdearboy.omegat.plugins.browser;
 
 import com.vlsolutions.swing.docking.Dockable;
+import com.vlsolutions.swing.docking.DockableState;
 import com.vlsolutions.swing.docking.DockingDesktop;
 import com.vlsolutions.swing.docking.RelativeDockablePosition;
 import org.omegat.gui.main.IMainWindow;
@@ -32,7 +33,10 @@ class BrowserPane extends JPanel {
         desktop.registerDockable(pane);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                desktop.addHiddenDockable(pane, RelativeDockablePosition.BOTTOM_LEFT);
+                DockableState oldState = desktop.getDockableState(pane);
+                if (oldState == null || oldState.isClosed()) {
+                    desktop.addHiddenDockable(pane, RelativeDockablePosition.BOTTOM_LEFT);
+                }
             }
         });
 

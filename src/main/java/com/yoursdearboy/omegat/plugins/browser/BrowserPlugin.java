@@ -20,6 +20,12 @@ public class BrowserPlugin {
     private static String SCRIPTS_DIR_NAME = "browser-scripts";
     private static ScriptsRunner scriptsRunner;
     private static ScriptsMonitor scriptsMonitor;
+    private static FilenameFilter filenameFilter = new FilenameFilter() {
+        @Override
+        public boolean accept(File dir, String name) {
+            return name.endsWith("groovy");
+        }
+    };
 
     public static void loadPlugins() {
         setupScriptsDir();
@@ -29,7 +35,7 @@ public class BrowserPlugin {
             public void onApplicationStartup() {
                 Platform.setImplicitExit(false);
                 setupMenu();
-                scriptsMonitor.start();
+                startScriptsRunner();
             }
 
             @Override
@@ -48,12 +54,15 @@ public class BrowserPlugin {
 
     private static void setupScriptsRunner() {
         scriptsRunner = new ScriptsRunner();
-        scriptsMonitor = new ScriptsMonitor(scriptsRunner, getBrowserScriptsDir(), new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith("groovy");
-            }
-        });
+        scriptsMonitor = new ScriptsMonitor(scriptsRunner, getBrowserScriptsDir(), filenameFilter);
+    }
+
+    private static void startScriptsRunner() {
+        for (File file : getBrowserScriptsDir().listFiles(filenameFilter)) {
+            scriptsRunner.add(file);
+            scriptsRunner.enable(file);
+        }
+        scriptsMonitor.start(true);
     }
 
     private static File getBrowserScriptsDir() {

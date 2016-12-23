@@ -12,6 +12,7 @@ class ScriptsMonitor implements DirectoryMonitor.Callback, DirectoryMonitor.Dire
     private final DirectoryMonitor directoryMonitor;
     private final FilenameFilter filenameFilter;
     private final ScriptsRunner scriptsRunner;
+    private boolean skipOnStartFlag = false;
 
     ScriptsMonitor(ScriptsRunner scriptsRunner, File scriptsDirectory, FilenameFilter filenameFilter) {
         this.scriptsRunner = scriptsRunner;
@@ -19,16 +20,21 @@ class ScriptsMonitor implements DirectoryMonitor.Callback, DirectoryMonitor.Dire
         this.filenameFilter = filenameFilter;
     }
 
-    void start() {
+    void start(boolean skipOnStart) {
+        skipOnStartFlag = skipOnStart;
+        directoryMonitor.checkChanges();
+        skipOnStartFlag = false;
         directoryMonitor.start();
     }
 
     @Override
     public void fileChanged(File file) {
+        if (skipOnStartFlag) return;
         if (!filenameFilter.accept(file.getParentFile(), file.getName())) return;
         if (file.exists()) {
             scriptsRunner.remove(file);
             scriptsRunner.add(file);
+            scriptsRunner.enable(file);
         } else {
             scriptsRunner.remove(file);
         }

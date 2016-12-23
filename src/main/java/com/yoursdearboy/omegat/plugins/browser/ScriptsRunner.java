@@ -38,7 +38,6 @@ class ScriptsRunner {
     void add(File file) {
         Log.log(String.format("Adding browser script: %s", file.getName()));
         for (Object listener : listeners.toArray()) ((ScriptsEventListener) listener).onAdd(file);
-        enable(file);
     }
 
     void enable(File file) {
