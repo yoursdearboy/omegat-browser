@@ -10,6 +10,7 @@ import org.omegat.core.data.SourceTextEntry
 import org.omegat.core.events.IEntryEventListener
 import org.omegat.core.events.IProjectEventListener
 
+def FILENAME = "google_translate.groovy"
 def KEY = "GOOGLE_TRANSLATE"
 def TITLE = "Google Translate"
 def DOMAIN = "translate.google.com"
@@ -28,7 +29,7 @@ def updateSourceText = { text ->
     });
 }
 
-CoreEvents.registerEntryEventListener(new IEntryEventListener() {
+def entryEventListener = new IEntryEventListener() {
     @Override
     void onNewFile(String s) {
     }
@@ -37,9 +38,9 @@ CoreEvents.registerEntryEventListener(new IEntryEventListener() {
     void onEntryActivated(SourceTextEntry sourceTextEntry) {
         updateSourceText(sourceTextEntry.srcText)
     }
-})
+}
 
-CoreEvents.registerProjectChangeListener(new IProjectEventListener() {
+def projectEventListener = new IProjectEventListener() {
     @Override
     void onProjectChanged(IProjectEventListener.PROJECT_CHANGE_TYPE project_change_type) {
         if (project_change_type == IProjectEventListener.PROJECT_CHANGE_TYPE.LOAD ||
@@ -71,7 +72,21 @@ CoreEvents.registerProjectChangeListener(new IProjectEventListener() {
             updateSourceText(null)
         }
     }
-})
+}
+
+def scriptsEventListener = [onAdd: {}, onEnable: {}, onRemove: {}]
+scriptsEventListener['onDisable'] = {File file ->
+    if (file.getName() == FILENAME) {
+        CoreEvents.unregisterEntryEventListener(entryEventListener)
+        CoreEvents.unregisterProjectChangeListener(projectEventListener)
+        scriptsRunner.unregisterEventListener(scriptsEventListener)
+    }
+};
+scriptsEventListener = scriptsEventListener.asType(ScriptsEventListener)
+
+CoreEvents.registerEntryEventListener(entryEventListener)
+CoreEvents.registerProjectChangeListener(projectEventListener)
+scriptsRunner.registerEventListener(scriptsEventListener)
 
 
 /* Copied from Apache Commons */

@@ -20,6 +20,8 @@ class ScriptsRunner {
         this.listeners = new ArrayList<ScriptsEventListener>();
         Bindings bindings = new SimpleBindings();
         bindings.put("BrowserPane", BrowserPane.class);
+        bindings.put("ScriptsEventListener", ScriptsEventListener.class);
+        bindings.put("scriptsRunner", this);
         ScriptEngineManager scriptEngineManager = new ScriptEngineManager(BrowserPlugin.class.getClassLoader());
         scriptEngineManager.setBindings(bindings);
         this.scriptEngine = scriptEngineManager.getEngineByName("groovy");
@@ -35,7 +37,7 @@ class ScriptsRunner {
 
     void add(File file) {
         Log.log(String.format("Adding browser script: %s", file.getName()));
-        for (ScriptsEventListener listener : listeners) listener.onAdd(file);
+        for (Object listener : listeners.toArray()) ((ScriptsEventListener) listener).onAdd(file);
         enable(file);
     }
 
@@ -48,17 +50,17 @@ class ScriptsRunner {
         } catch (ScriptException e) {
             e.printStackTrace();
         }
-        for (ScriptsEventListener listener : listeners) listener.onEnable(file);
+        for (Object listener : listeners.toArray()) ((ScriptsEventListener) listener).onEnable(file);
     }
 
     void disable(File file) {
         Log.log(String.format("Disabling browser script: %s", file.getName()));
-        for (ScriptsEventListener listener : listeners) listener.onDisable(file);
+        for (Object listener : listeners.toArray()) ((ScriptsEventListener) listener).onDisable(file);
     }
 
     void remove(File file) {
         disable(file);
         Log.log(String.format("Removing browser script: %s", file.getName()));
-        for (ScriptsEventListener listener : listeners) listener.onRemove(file);
+        for (Object listener : listeners.toArray()) ((ScriptsEventListener) listener).onRemove(file);
     }
 }
