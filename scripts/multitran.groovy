@@ -16,15 +16,17 @@ def TITLE = "Multitran"
 def DOMAIN = "multitran.ru"
 def PATH = "/c/m.exe"
 
-def pane = BrowserPane.newInstance([Core.getMainWindow(), KEY, TITLE, DOMAIN] as Object[])
+def pane = BrowserPane.get(KEY, TITLE, DOMAIN)
 
 String caretWord = null
-CoreEvents.registerEditorEventListener(new IEditorEventListener() {
+def editorEventListener = new IEditorEventListener() {
     @Override
     void onNewWord(String s) {
         caretWord = s
     }
-})
+}
+CoreEvents.registerEditorEventListener(editorEventListener)
+
 Action action = new AbstractAction() {
     @Override
     void actionPerformed(ActionEvent e) {
@@ -43,6 +45,7 @@ Action action = new AbstractAction() {
     }
 }
 
+// FIXME: Unregister it (can't!)
 Core.getEditor().registerPopupMenuConstructors(1000, new IPopupMenuConstructor() {
     @Override
     void addItems(JPopupMenu menu, JTextComponent comp, int mousepos, boolean isInActiveEntry,
@@ -57,13 +60,17 @@ Core.getEditor().registerPopupMenuConstructors(1000, new IPopupMenuConstructor()
 MainWindow mainWindow = (MainWindow) Core.getMainWindow()
 int COMMAND_MASK = System.getProperty("os.name").contains("OS X") ? ActionEvent.META_MASK : ActionEvent.CTRL_MASK
 KeyStroke keystroke = KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.ALT_MASK + COMMAND_MASK)
-mainWindow.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keystroke, "lookupInMultitran")
-mainWindow.getRootPane().getActionMap().put("lookupInMultitran", action)
+def actionMapKey = "lookupInMultitran"
+mainWindow.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keystroke, actionMapKey)
+mainWindow.getRootPane().getActionMap().put(actionMapKey, action)
 
 def scriptsEventListener = [onAdd: {}, onEnable: {}, onRemove: {}]
 scriptsEventListener['onDisable'] = {File file ->
     if (file.getName() == FILENAME) {
         pane.close()
+        CoreEvents.unregisterEditorEventListener(editorEventListener)
+        mainWindow.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).remove(keystroke)
+        mainWindow.getRootPane().getActionMap().remove(actionMapKey)
         scriptsRunner.unregisterEventListener(scriptsEventListener)
     }
 };
