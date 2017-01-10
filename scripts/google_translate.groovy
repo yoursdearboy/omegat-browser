@@ -179,3 +179,7 @@ void escapeJavaStyleString(Writer out, String str, boolean escapeSingleQuote,
         }
     }
 }
+
+String hex(char ch) {
+    return Integer.toHexString((int) ch).toUpperCase(Locale.ENGLISH);
+}
