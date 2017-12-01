@@ -1,3 +1,7 @@
+import javafx.application.Platform
+import javafx.beans.value.ChangeListener
+import javafx.beans.value.ObservableValue
+import javafx.concurrent.Worker
 import com.sun.glass.events.KeyEvent
 import org.omegat.core.Core
 import org.omegat.core.CoreEvents
@@ -82,30 +86,29 @@ scriptsEventListener = scriptsEventListener.asType(ScriptsEventListener)
 
 scriptsRunner.registerEventListener(scriptsEventListener)
 
+/* Reset fonts */
+String addCssJsCode = """
+var css = '* { font-family: sans-serif !important; }',
+   head = document.head || document.getElementsByTagName('head')[0],
+   style = document.createElement('style');
+style.type = 'text/css';
+if (style.styleSheet){
+ style.styleSheet.cssText = css;
+} else {
+ style.appendChild(document.createTextNode(css));
+}
 
-// Better to install Roboto fonts
-//String addCssJsCode = """
-//var css = '* { font-family: "Arial"; }',
-//    head = document.head || document.getElementsByTagName('head')[0],
-//    style = document.createElement('style');
-//style.type = 'text/css';
-//if (style.styleSheet){
-//  style.styleSheet.cssText = css;
-//} else {
-//  style.appendChild(document.createTextNode(css));
-//}
-//
-//head.appendChild(style);
-//"""
-//Platform.runLater(new Runnable() {
-//    @Override
-//    void run() {
-//        pane.getBrowser().getWebEngine().getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
-//            @Override
-//            void changed(ObservableValue<? extends Worker.State> observable, Worker.State oldValue, Worker.State newValue) {
-//                if (newValue != Worker.State.SUCCEEDED) return
-//                pane.getBrowser().getWebEngine().executeScript(addCssJsCode)
-//            }
-//        });
-//    }
-//})
+head.appendChild(style);
+"""
+Platform.runLater(new Runnable() {
+   @Override
+   void run() {
+       pane.getBrowser().getWebEngine().getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
+           @Override
+           void changed(ObservableValue<? extends Worker.State> observable, Worker.State oldValue, Worker.State newValue) {
+               if (newValue != Worker.State.SUCCEEDED) return
+               pane.getBrowser().getWebEngine().executeScript(addCssJsCode)
+           }
+       });
+   }
+})
