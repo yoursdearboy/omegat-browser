@@ -76,10 +76,10 @@ class Browser extends JFXPanel {
                 try {
                     URI newUri = new URI(newValue);
                     String newDomain = newUri.getHost();
-                    if (newDomain.startsWith("www.")) {
+                    if (newDomain != null && newDomain.startsWith("www.")) {
                         newDomain = newDomain.substring(4);
                     }
-                    if (!newDomain.equals(domain)) {
+                    if (newDomain == null || !newDomain.equals(domain)) {
                         Platform.runLater(new Runnable() {
                             public void run() {
                                 webEngine.load(oldValue);
