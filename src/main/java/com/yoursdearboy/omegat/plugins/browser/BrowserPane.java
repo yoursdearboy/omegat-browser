@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -23,10 +24,14 @@ class BrowserPane extends JPanel {
     private Browser browser;
 
     BrowserPane(final IMainWindow mainWindow, String key, String title) {
-        new BrowserPane(mainWindow, key, title, null);
+        this(mainWindow, key, title, (Pattern) null);
     }
 
     BrowserPane(final IMainWindow mainWindow, String key, String title, String domain) {
+        this(mainWindow, key, title, Pattern.compile(domain));
+    }
+
+    BrowserPane(final IMainWindow mainWindow, String key, String title, Pattern domain) {
         super(new BorderLayout());
 
         this.mainWindow = mainWindow;
@@ -54,8 +59,16 @@ class BrowserPane extends JPanel {
         desktop.remove((Dockable) pane); // this don't allow it to get in layout config
     }
 
-    // Since we can't close pane, let's reuse it
+    public static BrowserPane get(String key, String title) {
+        return get(key, title, (Pattern) null);
+    }
+
     public static BrowserPane get(String key, String title, String domain) {
+        return get(key, title, Pattern.compile(domain));
+    }
+
+    // Since we can't close pane, let's reuse it
+    public static BrowserPane get(String key, String title, Pattern domain) {
         BrowserPane pane = panes.get(key);
         if (pane == null) {
             pane = new BrowserPane(Core.getMainWindow(), key, title, domain);

@@ -16,6 +16,7 @@ def TITLE = "Deepl Translator"
 def DOMAIN = "deepl.com"
 
 def pane = BrowserPane.get(KEY, TITLE, DOMAIN)
+pane.getBrowser().loadURL(DOMAIN)
 
 def updateSourceText = { text ->
     if (text == null) text = ""

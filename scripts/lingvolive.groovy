@@ -22,6 +22,7 @@ def DOMAIN = "lingvolive.com"
 def PATH = "/en-us/translate"
 
 def pane = BrowserPane.get(KEY, TITLE, DOMAIN)
+pane.getBrowser().loadURL(DOMAIN)
 
 String caretWord = null
 def editorEventListener = new IEditorEventListener() {

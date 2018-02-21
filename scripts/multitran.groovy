@@ -17,6 +17,7 @@ def DOMAIN = "multitran.ru"
 def PATH = "/c/m.exe"
 
 def pane = BrowserPane.get(KEY, TITLE, DOMAIN)
+pane.getBrowser().loadURL(DOMAIN)
 
 String caretWord = null
 def editorEventListener = new IEditorEventListener() {

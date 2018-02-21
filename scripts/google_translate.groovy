@@ -16,6 +16,7 @@ def TITLE = "Google Translate"
 def DOMAIN = "translate.google.com"
 
 def pane = BrowserPane.get(KEY, TITLE, DOMAIN)
+pane.getBrowser().loadURL(DOMAIN)
 
 def updateSourceText = { text ->
     if (text == null) text = ""

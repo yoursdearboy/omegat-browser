@@ -1,5 +1,8 @@
 package com.yoursdearboy.omegat.plugins.browser;
 
+import javafx.scene.web.WebHistory;
+import org.omegat.util.Log;
+
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -14,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.regex.Pattern;
 
 /**
  * http://docs.oracle.com/javafx/2/swing/SimpleSwingBrowser.java.htm
@@ -21,13 +25,17 @@ import java.net.URL;
 class Browser extends JFXPanel {
     private WebEngine webEngine;
     private WebView webView;
-    private final String domain;
+    private final Pattern domain;
 
     Browser() {
-        this(null);
+        this((Pattern) null);
     }
 
     Browser(final String domain) {
+        this(Pattern.compile(domain));
+    }
+
+    Browser(final Pattern domain) {
         this.domain = domain;
         setLayout(new BorderLayout());
         Platform.runLater(new Runnable() {
@@ -38,7 +46,6 @@ class Browser extends JFXPanel {
                     fixDomain();
                 }
                 setScene(new Scene(webView));
-                loadURL(domain);
             }
         });
     }
@@ -69,7 +76,6 @@ class Browser extends JFXPanel {
         }
     }
 
-    // FIXME: Prevent visiting a url (for now this is the best solution)
     private void fixDomain() {
         webEngine.locationProperty().addListener(new ChangeListener<String>() {
             public void changed(ObservableValue<? extends String> observable, final String oldValue, String newValue) {
@@ -79,10 +85,16 @@ class Browser extends JFXPanel {
                     if (newDomain != null && newDomain.startsWith("www.")) {
                         newDomain = newDomain.substring(4);
                     }
-                    if (newDomain == null || !newDomain.equals(domain)) {
+                    if (newDomain == null ||
+                        (domain != null && !domain.matcher(newDomain).find())) {
+                        Log.log(String.format(
+                                "New domain %s doesn't match %s. Redirecting back.",
+                                newDomain, domain));
                         Platform.runLater(new Runnable() {
                             public void run() {
-                                webEngine.load(oldValue);
+                                WebHistory history = webEngine.getHistory();
+                                String currentUrl = history.getEntries().get(history.getCurrentIndex()).getUrl();
+                                webEngine.load(currentUrl);
                             }
                         });
                         try {
