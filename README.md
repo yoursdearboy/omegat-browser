@@ -28,3 +28,9 @@ Download and place [`omegat-browser-1.2.jar`](https://github.com/yoursdearboy/om
 Start OmegaT as usually. In menu choose `Tools -> Open browser scripts`. Place there downloaded scripts, they will be enabled automagically.
 
 Installed scripts can be enabled/disabled in `Tools -> Browser scripts`. In case of artifacts (multiple menu items) - restart OmegaT.
+
+<br/> 
+
+<a href="https://www.patreon.com/bePatron?u=9885919" target="_blank"><img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" height="30px"/></a>
+
+If my software helps you, consider making a donation. Thank you.
