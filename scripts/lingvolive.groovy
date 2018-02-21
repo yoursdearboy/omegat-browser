@@ -1,7 +1,3 @@
-import javafx.application.Platform
-import javafx.beans.value.ChangeListener
-import javafx.beans.value.ObservableValue
-import javafx.concurrent.Worker
 import com.sun.glass.events.KeyEvent
 import org.omegat.core.Core
 import org.omegat.core.CoreEvents
@@ -19,11 +15,12 @@ def FILENAME = "lingvolive.groovy"
 def KEY = "ABBYYLINGVOLIVE"
 def TITLE = "ABBYY Lingvo Live"
 def DOMAIN = "lingvolive.com"
-def PATH = "/en-us/translate"
 
 def pane = BrowserPane.get(KEY, TITLE, DOMAIN)
 pane.getBrowser().loadURL(DOMAIN)
+ScriptHelpers.resetFonts(pane.getBrowser().getWebEngine())
 
+/* Record word at caret */
 String caretWord = null
 def editorEventListener = new IEditorEventListener() {
     void onNewWord(String s) {
@@ -32,33 +29,28 @@ def editorEventListener = new IEditorEventListener() {
 }
 CoreEvents.registerEditorEventListener(editorEventListener)
 
+/* Main action that opens Lingvo Live */
 Action action = new AbstractAction() {
     @Override
     void actionPerformed(ActionEvent e) {
-        String s = Core.getEditor().getSelectedText()
-        if (s == null || s.isEmpty()) {
-            s = caretWord
-        }
-        String blackchars = "( |<|>)"
-        String stripRegex = "^${blackchars}+|${blackchars}+\$"
-        s = s.trim()
-        s = s.replaceAll(stripRegex,"")
-        if (s.isEmpty()) return
+        q = ScriptHelpers.prepareText(Core.getEditor().getSelectedText(), caretWord)
+        if (q == null) return
         ProjectProperties pp = Core.getProject().getProjectProperties()
         String sourceLangCode = pp.getSourceLanguage().getLanguageCode().toLowerCase()
         String targetLangCode = pp.getTargetLanguage().getLanguageCode().toLowerCase()
-        url = "http://${DOMAIN}${PATH}"
+        url = "http://${DOMAIN}/en-us/translate"
         url += "/${sourceLangCode}-${targetLangCode}"
-        url += "/${URLEncoder.encode(s, "UTF-8").replace("+", "%20")}"
+        url += "/${ScriptHelpers.encodeText(q)}"
         pane.getBrowser().loadURL(url)
     }
 }
 
-// FIXME: Unregister it (can't!)
+// FIXME: Remove menu items
+/* Popup menu item */
 Core.getEditor().registerPopupMenuConstructors(1000, new IPopupMenuConstructor() {
     @Override
     void addItems(JPopupMenu menu, JTextComponent comp, int mousepos, boolean isInActiveEntry,
-                         boolean isInActiveTranslation, final SegmentBuilder sb) {
+                  boolean isInActiveTranslation, final SegmentBuilder sb) {
         if (isInActiveEntry) {
             menu.addSeparator()
             JMenuItem menuItem = menu.add("Lookup in ABBYY Lingvo Live")
@@ -66,6 +58,7 @@ Core.getEditor().registerPopupMenuConstructors(1000, new IPopupMenuConstructor()
         }
     }
 })
+/* Bind hotkey: Ctrl + ALT + L */
 MainWindow mainWindow = (MainWindow) Core.getMainWindow()
 int COMMAND_MASK = System.getProperty("os.name").contains("OS X") ? ActionEvent.META_MASK : ActionEvent.CTRL_MASK
 KeyStroke keystroke = KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.ALT_MASK + COMMAND_MASK)
@@ -73,43 +66,19 @@ def actionMapKey = "lookupInAbbyyLingvoLive"
 mainWindow.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keystroke, actionMapKey)
 mainWindow.getRootPane().getActionMap().put(actionMapKey, action)
 
-def scriptsEventListener = [onAdd: {}, onEnable: {}, onRemove: {}]
-scriptsEventListener['onDisable'] = {File file ->
-    if (file.getName() == FILENAME) {
-        pane.close()
-        CoreEvents.unregisterEditorEventListener(editorEventListener)
-        mainWindow.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).remove(keystroke)
-        mainWindow.getRootPane().getActionMap().remove(actionMapKey)
-        scriptsRunner.unregisterEventListener(scriptsEventListener)
-    }
-};
-scriptsEventListener = scriptsEventListener.asType(ScriptsEventListener)
+/* Remove all this when script is disabled */
+def scriptsEventListener = [
+        onAdd    : {},
+        onEnable : {},
+        onRemove : {},
+        onDisable: { File file ->
+            if (file.getName() == FILENAME) {
+                pane.close()
+                CoreEvents.unregisterEditorEventListener(editorEventListener)
+                mainWindow.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).remove(keystroke)
+                mainWindow.getRootPane().getActionMap().remove(actionMapKey)
+                scriptsRunner.unregisterEventListener(scriptsEventListener)
+            }
+        }].asType(ScriptsEventListener)
 
 scriptsRunner.registerEventListener(scriptsEventListener)
-
-/* Reset fonts */
-String addCssJsCode = """
-var css = '* { font-family: sans-serif !important; }',
-   head = document.head || document.getElementsByTagName('head')[0],
-   style = document.createElement('style');
-style.type = 'text/css';
-if (style.styleSheet){
- style.styleSheet.cssText = css;
-} else {
- style.appendChild(document.createTextNode(css));
-}
-
-head.appendChild(style);
-"""
-Platform.runLater(new Runnable() {
-   @Override
-   void run() {
-       pane.getBrowser().getWebEngine().getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
-           @Override
-           void changed(ObservableValue<? extends Worker.State> observable, Worker.State oldValue, Worker.State newValue) {
-               if (newValue != Worker.State.SUCCEEDED) return
-               pane.getBrowser().getWebEngine().executeScript(addCssJsCode)
-           }
-       });
-   }
-})

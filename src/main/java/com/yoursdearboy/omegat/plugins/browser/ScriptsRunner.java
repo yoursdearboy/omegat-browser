@@ -21,6 +21,7 @@ class ScriptsRunner {
         Bindings bindings = new SimpleBindings();
         bindings.put("BrowserPane", BrowserPane.class);
         bindings.put("ScriptsEventListener", ScriptsEventListener.class);
+        bindings.put("ScriptHelpers", ScriptHelpers.class);
         bindings.put("scriptsRunner", this);
         ScriptEngineManager scriptEngineManager = new ScriptEngineManager(BrowserPlugin.class.getClassLoader());
         scriptEngineManager.setBindings(bindings);
