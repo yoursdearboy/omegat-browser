@@ -1,5 +1,5 @@
 group 'com.yoursdearboy.omegat.plugins.browser'
-version '1.0'
+version '1.2'
 
 apply plugin: 'java'
 
