@@ -19,6 +19,20 @@ def pane = BrowserPane.get(KEY, TITLE, DOMAIN)
 pane.getBrowser().loadURL(DOMAIN)
 ScriptHelpers.resetFonts(pane.getBrowser().getWebEngine())
 
+/* Method to extract source text area element for JS */
+def getSourceTextAreaJS = { ->
+    "document.getElementsByClassName('lmt__side_container--source')[0].getElementsByTagName('textarea')[0]"
+}
+
+/* Method to trigger translation update for JS */
+def updateTranslationJS = { srcTextAreaRef ->
+    """
+var event = document.createEvent('HTMLEvents');
+event.initEvent('change', false, true);
+${srcTextAreaRef}.dispatchEvent(event);
+"""
+}
+
 /* Main action that puts text into translation area */
 def updateSourceText = { text ->
     if (text == null) text = ""
@@ -27,9 +41,48 @@ def updateSourceText = { text ->
         void run() {
             text = ScriptHelpers.escapeJavaStyleString(text)
             String jsCode = """
-                var srcTextArea = document.getElementsByClassName('lmt__side_container--source')[0].getElementsByTagName('textarea')[0];
-                srcTextArea.value = "${text}"
-            """
+var newText = "${text}";
+var srcTextArea = ${getSourceTextAreaJS};
+if (newText != srcTextArea.value) {
+  srcTextArea.value = newText;
+  ${updateTranslationJS("srcTextArea")}
+}
+"""
+            pane.getBrowser().getWebEngine().executeScript(jsCode)
+        }
+    })
+}
+
+def updateLanguages = { srcLang, dstLang ->
+    Platform.runLater(new Runnable() {
+        @Override
+        void run() {
+            String jsCode = """
+var sLang   = "${srcLang}";
+var dLang   = "${dstLang}";
+sLang       = sLang.toUpperCase();
+dLang       = dLang.toUpperCase();
+
+// set the target language
+var dstLangItems = document.getElementsByClassName("lmt__language_select--target");
+for (var i = 0, len = dstLangItems[0].childNodes[4].children.length; i < len; i++) {
+    if (dstLangItems[0].childNodes[4].children[i].attributes[0].nodeValue == dLang){
+      dstLangItems[0].childNodes[4].children[i].click();
+    }
+}
+
+// set the source language
+var srcLangItems = document.getElementsByClassName("lmt__language_select--source");
+srcLangItems[0].childNodes[4].children[0].click();
+for (var i = 0, len = srcLangItems[0].childNodes[4].children.length; i < len; i++) {
+    if (srcLangItems[0].childNodes[4].children[i].attributes[0].nodeValue == sLang){
+      srcLangItems[0].childNodes[4].children[i].click();
+    }
+}
+
+var srcTextArea = ${getSourceTextAreaJS}
+${updateTranslationJS("srcTextArea")}
+"""
             pane.getBrowser().getWebEngine().executeScript(jsCode)
         }
     })
@@ -47,7 +100,6 @@ def entryEventListener = new IEntryEventListener() {
     }
 }
 
-// FIXME: Change language
 /* Also change language */
 def projectEventListener = new IProjectEventListener() {
     @Override
@@ -69,6 +121,7 @@ def projectEventListener = new IProjectEventListener() {
                     stateProperty.addListener(new ChangeListener<Worker.State>() {
                         @Override
                         void changed(ObservableValue<? extends Worker.State> observable, Worker.State oldValue, Worker.State newValue) {
+                            updateLanguages(sourceCode, targetCode)
                             updateSourceText(Core.getEditor().getCurrentEntry().srcText)
                             stateProperty.removeListener(this)
                         }
@@ -78,6 +131,7 @@ def projectEventListener = new IProjectEventListener() {
         }
 
         if (project_change_type == IProjectEventListener.PROJECT_CHANGE_TYPE.CLOSE) {
+            updateLanguages(null, null)
             updateSourceText(null)
         }
     }
