@@ -30,6 +30,7 @@ public class BrowserPlugin {
     };
 
     public static void loadPlugins() {
+        setupSystemProperties();
         setupScriptsDir();
         setupScriptsRunner();
         setupScriptsPrefs();
@@ -48,6 +49,10 @@ public class BrowserPlugin {
     }
 
     public static void unloadPlugins() {
+    }
+
+    private static void setupSystemProperties() {
+        System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
     }
 
     private static void setupScriptsDir() {
