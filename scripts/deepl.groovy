@@ -17,7 +17,7 @@ def DOMAIN = "deepl.com"
 
 def pane = BrowserPane.get(KEY, TITLE, DOMAIN)
 pane.getBrowser().loadURL(DOMAIN)
-ScriptHelpers.resetFonts(pane.getBrowser().getWebEngine())
+ScriptHelpers.resetFonts(pane.getBrowser())
 
 /* Method to extract source text area element for JS */
 def getSourceTextAreaJS = { ->

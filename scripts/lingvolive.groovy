@@ -18,7 +18,7 @@ def DOMAIN = "lingvolive.com"
 
 def pane = BrowserPane.get(KEY, TITLE, DOMAIN)
 pane.getBrowser().loadURL(DOMAIN)
-ScriptHelpers.resetFonts(pane.getBrowser().getWebEngine())
+ScriptHelpers.resetFonts(pane.getBrowser())
 
 /* Record word at caret */
 String caretWord = null

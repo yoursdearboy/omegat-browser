@@ -55,10 +55,11 @@ public class ScriptHelpers {
           + "}"
           + "head.appendChild(style);";
 
-    public static void resetFonts(final WebEngine engine) {
+    public static void resetFonts(final Browser browser) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                final WebEngine engine = browser.getWebEngine();
                 engine.getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
                     @Override
                     public void changed(ObservableValue<? extends Worker.State> observable, Worker.State oldValue, Worker.State newValue) {
