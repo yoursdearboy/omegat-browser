@@ -29,8 +29,8 @@ Start OmegaT as usually. In menu choose `Tools -> Open browser scripts`. Place t
 
 Installed scripts can be enabled/disabled in `Tools -> Browser scripts`. In case of artifacts (multiple menu items) - restart OmegaT.
 
-Note: Java 8 or later required with JavaFX support. In most cases you already have it.
-On Linux check that package `openjfx` installed or install Java from Oracle. More info can be found [in this thread](https://github.com/yoursdearboy/omegat-browser/issues/3).
+Note: Java 8 or newer required with JavaFX support. Oracle's Java 8 to 10 already have JavaFX. For other distributions or newer versions download it from [Gluon](https://gluonhq.com/products/javafx/). On Linux it is avaiable via `openjfx` package.  
+More info can be found [in this thread](https://github.com/yoursdearboy/omegat-browser/issues/3).
 
 # Changelog
 
