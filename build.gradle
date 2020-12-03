@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'distribution'
     id "org.openjfx.javafxplugin" version "0.0.9"
 }
 
@@ -50,6 +51,23 @@ task copyToOmegaT {
         copy {
             from file("$buildDir/libs")
             into file("$omegatDir/plugins")
+        }
+    }
+}
+
+distTar {
+    compression = Compression.GZIP
+}
+
+artifacts {
+    archives jar
+}
+
+distributions {
+    main {
+        contents {
+            from(jar)
+            from('README.md')
         }
     }
 }
