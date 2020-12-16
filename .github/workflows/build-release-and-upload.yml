@@ -56,8 +56,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: omegat-browser-Linux-${{ steps.get_version.outputs.VERSION }}.zip
-        asset_name: omegat-browser-Linux-${{ steps.get_version.outputs.VERSION }}.zip
+        asset_path: omegat-browser-linux-${{ steps.get_version.outputs.VERSION }}.zip
+        asset_name: omegat-browser-linux-${{ steps.get_version.outputs.VERSION }}.zip
         asset_content_type: application/zip
     - name: Upload Release Asset(Windows,zip)
       id: upload-release-asset-win
@@ -66,8 +66,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: omegat-browser-Windows-${{ steps.get_version.outputs.VERSION }}.zip
-        asset_name: omegat-browser-Windows-${{ steps.get_version.outputs.VERSION }}.zip
+        asset_path: omegat-browser-win-${{ steps.get_version.outputs.VERSION }}.zip
+        asset_name: omegat-browser-win-${{ steps.get_version.outputs.VERSION }}.zip
         asset_content_type: application/gzip
     - name: Upload Release Asset(mac,zip)
       id: upload-release-asset-mac
@@ -76,7 +76,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: omegat-browser-macOS-${{ steps.get_version.outputs.VERSION }}.zip
-        asset_name: omegat-browser-macOS-${{ steps.get_version.outputs.VERSION }}.zip
+        asset_path: omegat-browser-mac-${{ steps.get_version.outputs.VERSION }}.zip
+        asset_name: omegat-browser-mac-${{ steps.get_version.outputs.VERSION }}.zip
         asset_content_type: application/zip
-
