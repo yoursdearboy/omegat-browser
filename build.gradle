@@ -8,7 +8,15 @@ group 'com.yoursdearboy.omegat.plugins.browser'
 version '1.3'
 
 sourceCompatibility = 1.8
-def osName = System.getProperty("os.name")
+def currentOS = org.gradle.internal.os.OperatingSystem.current()
+def platform
+if (currentOS.isWindows()) {
+    platform = 'win'
+} else if (currentOS.isLinux()) {
+    platform = 'linux'
+} else if (currentOS.isMacOsX()) {
+    platform = 'mac'
+}
 
 ext {
     mainClass = "com.yoursdearboy.omegat.plugins.browser.BrowserPlugin"
@@ -35,7 +43,7 @@ javafx {
 }
 
 jar {
-    archiveAppendix = osName
+    archiveAppendix = platform
     manifest {
         attributes("OmegaT-Plugins": rootProject.ext.mainClass)
     }
@@ -59,11 +67,11 @@ task copyToOmegaT {
 
 distTar {
     compression = Compression.GZIP
-    archiveAppendix = osName
+    archiveAppendix = platform
 }
 
 distZip {
-    archiveAppendix = osName
+    archiveAppendix = platform
 }
 
 artifacts {
