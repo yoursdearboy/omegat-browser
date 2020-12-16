@@ -25,7 +25,7 @@ jobs:
       name: Upload artifact
       with:
         name: artifact
-        path: build/distributons/*.zip
+        path: build/distributions/*.zip
 
   create-release:
     runs-on: ubuntu-latest
