@@ -25,7 +25,7 @@ def updateSourceText = { text ->
         @Override
         void run() {
             text = ScriptHelpers.escapeJavaStyleString(text)
-            String jsCode = "document.getElementById(\"source\").value = \"${text}\""
+            String jsCode = "document.getElementById(\"source\").value = \"${text}\";document.getElementById('gt-ft-res').style.display = 'none';document.getElementById('gb').style.display = 'none';document.getElementById('gba').style.display = 'none';"
             pane.getBrowser().getWebEngine().executeScript(jsCode)
         }
     })
