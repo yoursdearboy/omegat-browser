@@ -1,4 +1,3 @@
-import com.sun.glass.events.KeyEvent
 import javafx.application.Platform
 import org.omegat.core.Core
 import org.omegat.core.CoreEvents
@@ -10,6 +9,7 @@ import org.omegat.gui.main.MainWindow
 import javax.swing.*
 import javax.swing.text.JTextComponent
 import java.awt.event.ActionEvent
+import java.awt.event.KeyEvent
 
 def FILENAME = "sangyo_honyaku.groovy"
 def KEY = "SANGYO_HONYAKU"
