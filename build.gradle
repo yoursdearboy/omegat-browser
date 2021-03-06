@@ -30,7 +30,7 @@ dependencies {
 }
 
 javafx {
-    version = '12'
+    version = '11'
     modules = [ 'javafx.swing', 'javafx.web']
     configuration = 'compile'
 }
