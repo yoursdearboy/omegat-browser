@@ -1,4 +1,3 @@
-import com.sun.glass.events.KeyEvent
 import org.omegat.core.Core
 import org.omegat.core.CoreEvents
 import org.omegat.core.data.ProjectProperties
@@ -10,6 +9,7 @@ import org.omegat.gui.main.MainWindow
 import javax.swing.*
 import javax.swing.text.JTextComponent
 import java.awt.event.ActionEvent
+import java.awt.event.KeyEvent
 
 def FILENAME = "lingvolive.groovy"
 def KEY = "ABBYYLINGVOLIVE"

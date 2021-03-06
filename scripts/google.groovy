@@ -1,4 +1,3 @@
-import com.sun.glass.events.KeyEvent
 import org.omegat.core.Core
 import org.omegat.core.CoreEvents
 import org.omegat.core.events.IEditorEventListener
@@ -14,6 +13,7 @@ import javax.swing.JPopupMenu
 import javax.swing.KeyStroke
 import javax.swing.text.JTextComponent
 import java.awt.event.ActionEvent
+import java.awt.event.KeyEvent
 
 def FILENAME = "google.groovy"
 def KEY = "GOOGLE"
