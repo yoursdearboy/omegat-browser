@@ -8,12 +8,12 @@ A plugin for [OmegaT](http://omegat.org) for fast access to websites. Bindings c
 
 Download using Right click -> Save as. Name must end with `.groovy`
 
-* [Google Translate](https://raw.githubusercontent.com/yoursdearboy/omegat-browser/v1.3/scripts/google_translate.groovy) - translates current entry. Choose language manually.
-* [Multitran](https://raw.githubusercontent.com/yoursdearboy/omegat-browser/v1.3/scripts/multitran.groovy) - lookup selected or focused word in [multitran.ru](multitran.ru) dictionary. Shortcut: `CTRL + ALT + M`.
-* [Lingvo Live](https://raw.githubusercontent.com/yoursdearboy/omegat-browser/v1.3/scripts/lingvolive.groovy) - lookup selected or focused word in [lingvolive.ru](lingvolive.ru) dictionary. Shortcut: `CTRL + ALT + L`. If **all** symbols are broken - try to install [Roboto fonts](https://storage.googleapis.com/material-design/publish/material_v_10/assets/0B0J8hsRkk91LRjU4U1NSeXdjd1U/RobotoTTF.zip).
-* [Deepl](https://raw.githubusercontent.com/yoursdearboy/omegat-browser/v1.3/scripts/deepl.groovy) - translates current entry using [Deepl](https://deepl.com). Choose language manually. Contributed by [@rosros2000](https://github.com/rosros2000).
-* [Google Search](https://raw.githubusercontent.com/yoursdearboy/omegat-browser/v1.3/scripts/google.groovy) - search current entry using [Google](https://google.com).
-* [Sangyo Honyaku](https://raw.githubusercontent.com/yoursdearboy/omegat-browser/v1.3/scripts/sangyo_honyaku.groovy) - Japanese dictionary [Sangyo Honyaku](https://sangyo-honyaku.jp/dictionaries).
+* [Google Translate](https://raw.githubusercontent.com/yoursdearboy/omegat-browser/master/scripts/google_translate.groovy) - translates current entry. Choose language manually.
+* [Multitran](https://raw.githubusercontent.com/yoursdearboy/omegat-browser/master/scripts/multitran.groovy) - lookup selected or focused word in [multitran.ru](multitran.ru) dictionary. Shortcut: `CTRL + ALT + M`.
+* [Lingvo Live](https://raw.githubusercontent.com/yoursdearboy/omegat-browser/master/scripts/lingvolive.groovy) - lookup selected or focused word in [lingvolive.ru](lingvolive.ru) dictionary. Shortcut: `CTRL + ALT + L`. If **all** symbols are broken - try to install [Roboto fonts](https://storage.googleapis.com/material-design/publish/material_v_10/assets/0B0J8hsRkk91LRjU4U1NSeXdjd1U/RobotoTTF.zip).
+* [Deepl](https://raw.githubusercontent.com/yoursdearboy/omegat-browser/master/scripts/deepl.groovy) - translates current entry using [Deepl](https://deepl.com). Choose language manually. Contributed by [@rosros2000](https://github.com/rosros2000).
+* [Google Search](https://raw.githubusercontent.com/yoursdearboy/omegat-browser/master/scripts/google.groovy) - search current entry using [Google](https://google.com).
+* [Sangyo Honyaku](https://raw.githubusercontent.com/yoursdearboy/omegat-browser/master/scripts/sangyo_honyaku.groovy) - Japanese dictionary [Sangyo Honyaku](https://sangyo-honyaku.jp/dictionaries).
 
 *On Mac use `CMD` instead of `Ctrl` for shortcuts.*
 
