@@ -1,37 +1,38 @@
+name: Release
+
 on:
   push:
     tags:
       - 'v*'
 
-name: Upload Release Asset
-
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    - uses: actions/setup-java@v1
-      name: Setup Java
+    - name: Setup Java
+      uses: actions/setup-java@v1
       with:
         java-version: 11
-    - uses: eskatos/gradle-command-action@v1
+    - name: Build
+      uses: eskatos/gradle-command-action@v1
       with:
         arguments: build
     - name: Get the version
       id: get_version
       run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\/v/}
-    - name: Create Release
+    - name: Create release
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ github.ref }}
-        release_name: Release v${{ steps.get_version.outputs.VERSION }}
+        release_name: Version v${{ steps.get_version.outputs.VERSION }}
         draft: false
         prerelease: false
-    - name: Upload Release Asset
+    - name: Upload release asset
       id: upload-release-asset
       uses: actions/upload-release-asset@v1
       env:
