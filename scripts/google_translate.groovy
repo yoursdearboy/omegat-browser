@@ -25,7 +25,11 @@ def updateSourceText = { text ->
         @Override
         void run() {
             text = ScriptHelpers.escapeJavaStyleString(text)
-            String jsCode = "document.getElementById(\"source\").value = \"${text}\""
+            String jsCode = """
+                var textArea = document.querySelector('textarea');
+                textArea.value = "${text}";
+                textArea.dispatchEvent(new Event('input', { bubbles: true }));
+            """
             pane.getBrowser().getWebEngine().executeScript(jsCode)
         }
     })
@@ -54,7 +58,7 @@ def projectEventListener = new IProjectEventListener() {
             ProjectProperties pp = Core.getProject().getProjectProperties()
             String sourceCode = pp.getSourceLanguage().getLanguageCode().toLowerCase()
             String targetCode = pp.getTargetLanguage().getLanguageCode().toLowerCase()
-            String url = "http://${DOMAIN}/#${sourceCode}/${targetCode}"
+            String url = "https://${DOMAIN}/?sl=${sourceCode}&tl=${targetCode}"
             browser = pane.getBrowser()
             browser.loadURL(url)
             Platform.runLater(new Runnable() {
