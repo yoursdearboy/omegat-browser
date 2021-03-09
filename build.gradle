@@ -3,28 +3,22 @@ plugins {
     id 'distribution'
     id 'groovy'
     id "org.openjfx.javafxplugin" version "0.0.9"
+    id "org.omegat.gradle"        version "1.4.2"
 }
 
 group 'com.yoursdearboy.omegat.plugins.browser'
 version '1.4.0-rc.1'
 
 sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
-ext {
-    mainClass = "com.yoursdearboy.omegat.plugins.browser.BrowserPlugin"
-}
-
-repositories {
-    mavenCentral()
-    maven {
-        url 'http://dl.bintray.com/omegat-org/maven'
-    }
+omegat {
+    version = "5.2.0"
+    pluginClass = "com.yoursdearboy.omegat.plugins.browser.BrowserPlugin"
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'org.omegat:vldocking:3.0.5'
-    implementation 'org.omegat:omegat:5.2.0'
     implementation 'org.codehaus.groovy:groovy-all:3.0.1'
     testImplementation group: 'junit', name: 'junit', version: '4.11'
 }
@@ -32,16 +26,7 @@ dependencies {
 javafx {
     version = '11'
     modules = [ 'javafx.swing', 'javafx.web']
-    configuration = 'compile'
-}
-
-jar {
-    manifest {
-        attributes("OmegaT-Plugins": rootProject.ext.mainClass)
-    }
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+    configuration = 'packIntoJar'
 }
 
 task copyToOmegaT {
